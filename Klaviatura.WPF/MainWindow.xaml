@@ -1,0 +1,221 @@
+﻿<Window x:Class="Klaviatura.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Klaviatura.WPF"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="425" Width="795" MinHeight="425" MinWidth="795" MaxHeight="425" MaxWidth="795" 
+        WindowStartupLocation="CenterScreen">
+
+
+    <Window.Resources>
+        <Style x:Key="buttonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="FontSize" Value="30"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+        <ControlTemplate x:Key="RoundedButtonStyle" TargetType="{x:Type ButtonBase}">
+            <Border x:Name="border" CornerRadius="5" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Button.IsDefaulted" Value="true">
+                    <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="true">
+                    <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+                    <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </Window.Resources>
+    
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="4*"/>
+        </Grid.RowDefinitions>
+
+        <Canvas Grid.Row="0"  Background="#1c1c1c">
+            <TextBlock Text="Speed:" FontSize="16" Canvas.Left="10" Foreground="White"/>
+            <TextBlock x:Name="textSpeed" Text="0 chars/min" FontSize="16" FontWeight="Bold" Canvas.Left="65" Foreground="White"/>
+            <TextBlock Text="Fails:" FontSize="16" Canvas.Left="220" Foreground="White"/>
+            <TextBlock x:Name="textFails" Text="0" FontSize="16" FontWeight="Bold" Canvas.Left="265" Foreground="White"/>
+            <TextBlock Text="Difficulty:" FontSize="16" Canvas.Left="380" Foreground="White"/>
+            <Label x:Name="labelDifficulty" Content="1" FontSize="16" FontWeight="Bold" Canvas.Left="456" Height="21" 
+                   Width="30" Padding="0" Foreground="White"/>
+            <Slider x:Name="sliderDiff" Canvas.Left="495" Width="110" Canvas.Top="3" Minimum="1" Maximum="4" Value="1" 
+                    TickFrequency="1" TickPlacement="BottomRight" ValueChanged="sliderDiff_ValueChanged" IsSnapToTickEnabled="True"/>
+            <CheckBox x:Name="checkCase" Content="Case Sensitive" Canvas.Left="620" Canvas.Top="5" Foreground="White"/>
+            <Button x:Name="ButtonStart" Content="Start" Canvas.Left="380" Canvas.Top="35" Height="27" Width="190"
+                    Background="LightGreen" FontSize="18" FontWeight="Bold" Padding="0" Click="ButtonStart_Click"/>
+            <Button x:Name="ButtonStop" Content="Stop" Canvas.Left="580" Canvas.Top="35" Height="27" Width="190"
+                    Background="Salmon" FontSize="18" FontWeight="Bold" Padding="0" Click="ButtonStop_Click"/>
+        </Canvas>
+
+
+        <TextBox x:Name="textLine" FontSize="18" FontWeight="DemiBold" Grid.Row="1" Background="LightGray" 
+                 IsReadOnly="True" BorderThickness="0"/>
+        <TextBox x:Name="textLineInput" FontSize="18" FontWeight="DemiBold" Grid.Row="2" Background="LightGray"
+                 IsReadOnly="True" BorderThickness="0" PreviewTextInput="textLineInput_PreviewTextInput" 
+                 PreviewKeyUp="textLineInput_PreviewKeyUp" PreviewKeyDown="textLineInput_PreviewKeyDown"/>
+
+
+
+        <WrapPanel Grid.Row="3" Background="#1c1c1c">
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonTilda" Content="`" Background="Salmon" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="button1" Content="1" Background="Salmon" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="button2" Content="2" Background="Salmon" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="button3" Content="3" Background="Gold" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="button4" Content="4" Background="LightGreen" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="button5" Content="5" Background="LightSkyBlue" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="button6" Content="6" Background="LightSkyBlue" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="button7" Content="7" Background="Violet" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="button8" Content="8" Background="Violet" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="button9" Content="9" Background="Salmon" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="button0" Content="0" Background="Gold" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonMinus" Content="-" Background="LightGreen" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonEqually" Content="=" Background="LightGreen" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonBackspace" Content="Backspace" Background="Gray" Width="111" 
+                    FontSize="18" Style="{StaticResource ResourceKey=buttonStyle}"/>
+
+
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonTab" Content="Tab" Background="Gray" Width="90" 
+                    FontSize="18" Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonQ" Content="q" Background="Salmon" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonW" Content="w" Background="Gold" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonE" Content="e" Background="LightGreen" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonR" Content="r" Background="LightSkyBlue" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonT" Content="t" Background="LightSkyBlue" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonY" Content="y" Background="Violet" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonU" Content="u" Background="Violet" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonI" Content="i" Background="Salmon" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonO" Content="o" Background="Gold" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonP" Content="p" Background="LightGreen" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonSquareBracketLeft" Content="[" Background="LightGreen" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonSquareBracketRight" Content="]" Background="LightGreen" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonRevSlash" Content="\" Background="LightGreen" Width="66" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+
+
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonCapsLock" Content="CapsLock" Background="Gray" Width="110" 
+                    FontSize="18" Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonA" Content="a" Background="Salmon" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonS" Content="s" Background="Gold" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonD" Content="d" Background="LightGreen" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonF" Content="f" Background="LightSkyBlue" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonG" Content="g" Background="LightSkyBlue" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonH" Content="h" Background="Violet" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonJ" Content="j" Background="Violet" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonK" Content="k" Background="Salmon" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonL" Content="l" Background="Gold" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonSemicolon" Content=";" Background="LightGreen" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonMarks" Content="'" Background="LightGreen" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonEnter" Content="Enter" Background="Gray" Width="97" 
+                    FontSize="18" Style="{StaticResource ResourceKey=buttonStyle}"/>
+
+
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonShift" Content="Shift" Background="Gray" Width="130" 
+                    FontSize="18" Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonZ" Content="z" Background="Salmon" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonX" Content="x" Background="Gold" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonC" Content="c" Background="LightGreen" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonV" Content="v" Background="LightSkyBlue" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonB" Content="b" Background="LightSkyBlue" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonN" Content="n" Background="Violet" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonM" Content="m" Background="Violet" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonComma" Content="," Background="Salmon" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonDot" Content="." Background="Gold" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonSlash" Content="/" Background="LightGreen" Width="45" 
+                    Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonRShift" Content="Shift" Background="Gray" Width="128" 
+                    FontSize="18" Style="{StaticResource ResourceKey=buttonStyle}"/>
+
+
+
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonCtrl" Content="Ctrl" Background="Gray" Width="80" 
+                    FontSize="18" Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonWin" Content="Win" Background="Gray" Width="80" 
+                    FontSize="18" Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonAlt" Content="Alt" Background="Gray" Width="80" 
+                    FontSize="18" Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonSpace" Content="Space" Background="DarkGoldenrod" Width="258" 
+                    FontSize="18" Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonRAlt" Content="Alt" Background="Gray" Width="80" 
+                    FontSize="18" Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonRWin" Content="Win" Background="Gray" Width="80" 
+                    FontSize="18" Style="{StaticResource ResourceKey=buttonStyle}"/>
+            <Button Template="{DynamicResource RoundedButtonStyle}" x:Name="buttonRCtrl" Content="Ctrl" Background="Gray" Width="80" 
+                    FontSize="18" Style="{StaticResource ResourceKey=buttonStyle}"/>
+
+        </WrapPanel> 
+
+    </Grid>
+</Window>
